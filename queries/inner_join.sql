@@ -1,12 +1,12 @@
-SELECT 
-    f.film_id, 
-    f.title, 
+SELECT
+    f.film_id,
+    f.title,
     a.actor_name
-FROM 
+FROM
     films f
-INNER JOIN 
+INNER JOIN
     film_actors fa ON f.film_id = fa.film_id
-INNER JOIN 
+INNER JOIN
     actors a ON fa.actor_id = a.actor_id
-ORDER BY 
+ORDER BY
     f.film_id;
