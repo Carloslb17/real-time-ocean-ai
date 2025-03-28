@@ -1,9 +1,43 @@
+version: '3'
 
 # Quickstart
 services:
-  web:
-    build: .
+  source_postgres:
+    imsge: postgres:latest
     ports:
-      - "8000:5000"
-  redis:
-    image: "redis:alpine"
+     - "5433:5432"
+    networks:
+      - etl_network
+    environment:
+      - POSTGRES_DB: source_db
+      - POSTGRES_USER: postgres
+      - POSTGRES_PASSWORD: secret
+    # Persisting data 
+    volumes:
+      - ./source_db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  destination_postgres:
+    imsge: postgres:latest
+    ports:
+     - "5433:5432"
+    networks:
+      - etl_network
+    environment:
+      - POSTGRES_DB: destination_db
+      - POSTGRES_USER: postgres
+      - POSTGRES_PASSWORD: secret
+
+
+  elt_script:
+    build:
+      context: ./src/etl/etl_tasks
+      dockerfile: Dockerfile
+    command: ['pyhton', 'etl_tasks.py']
+    networks:
+      - etl_netkwork
+    depends_on:
+      - source_postgres
+      - destination_postgres
+networks:
+  etl_network:
+    driver: bridge
