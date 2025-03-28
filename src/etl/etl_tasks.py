@@ -20,7 +20,7 @@ def wait_for_postgres(host, max_retries=5, delay_seconds=5):
             time.sleep(delay_seconds)
 
         print("Max retries reached. Exiting")
-        return False
+    return False
 
 
 if not wait_for_postgres(host="source_postgres"):
@@ -44,7 +44,7 @@ dump_command = [
     "pg-dump",
     "-h",
     source_config["host"],
-    "-u",
+    "-U",
     source_config["user"],
     "-d",
     source_config["dbname"],
@@ -62,7 +62,7 @@ load_command = [
     "pg-dump",
     "-h",
     destination_config["host"],
-    "-u",
+    "-U",
     destination_config["user"],
     "-d",
     destination_config["dbname"],
